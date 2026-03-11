@@ -36,8 +36,12 @@ await fastify.register(cors, {
 });
 
 // 静态文件服务（生产环境）
+const staticRoot = process.env.NODE_ENV === 'production' 
+  ? join(__dirname, 'public') 
+  : join(__dirname, '../frontend/dist');
+  
 await fastify.register(staticPlugin, {
-  root: join(__dirname, '../frontend/dist'),
+  root: staticRoot,
   prefix: '/'
 });
 
