@@ -2,7 +2,7 @@
  * AI 状态类型定义
  */
 
-import { DeviceType } from './events';
+import type { DeviceType } from './events.js';
 
 // AI 状态
 export interface AIState {
@@ -49,6 +49,7 @@ export interface Task {
 // 任务状态
 export type TaskStatus =
   | 'pending'
+  | 'running'
   | 'in_progress'
   | 'completed'
   | 'failed';
@@ -64,6 +65,9 @@ export interface TaskStep {
   endTime?: number;
   result?: string;
 }
+
+// 导出 DeviceType 供其他模块使用
+export type { DeviceType } from './events.js';
 
 // 设备位置映射
 export const DEVICE_POSITIONS: Record<DeviceType, Position3D> = {
