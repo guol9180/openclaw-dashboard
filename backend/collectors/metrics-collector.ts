@@ -4,7 +4,7 @@
 
 import { EventEmitter } from 'events';
 import si from 'systeminformation';
-import type { SystemMetrics, AIMetrics } from '../types/metrics';
+import type { SystemMetrics, AIMetrics } from '../types/metrics.js';
 
 export class MetricsCollector extends EventEmitter {
   private interval?: NodeJS.Timeout;
