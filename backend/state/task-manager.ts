@@ -3,8 +3,8 @@
  */
 
 import { EventEmitter } from 'events';
-import type { Task, TaskStep, TaskStatus, DeviceType } from '../types/state';
-import type { OpenClawEvent, EventType } from '../types/events';
+import type { Task, TaskStep, TaskStatus, DeviceType } from '../types/state.js';
+import type { OpenClawEvent, EventType } from '../types/events.js';
 
 // 默认任务步骤模板
 const DEFAULT_STEPS: Array<{ description: string; device?: DeviceType }> = [
