@@ -1,5 +1,5 @@
 /**
- * AI Room 主场景
+ * AI Room 主场景 - 完整版
  */
 
 import { Canvas } from '@react-three/fiber';
@@ -7,6 +7,9 @@ import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
 import { Room } from '../components/room/Room';
 import { AICharacter } from '../components/character/AICharacter';
 import { Devices } from '../components/devices/Devices';
+import { QuestLog } from '../components/ui/QuestLog';
+import { EventLog } from '../components/ui/EventLog';
+import { SystemStatus } from '../components/ui/SystemStatus';
 import { useWebSocket } from '../hooks/useWebSocket';
 
 export function AIRoom() {
@@ -14,7 +17,8 @@ export function AIRoom() {
   useWebSocket();
 
   return (
-    <div style={{ width: '100vw', height: '100vh' }}>
+    <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
+      {/* 3D Canvas */}
       <Canvas shadows>
         {/* 相机 */}
         <PerspectiveCamera
@@ -50,6 +54,11 @@ export function AIRoom() {
         {/* AI 角色 */}
         <AICharacter />
       </Canvas>
+
+      {/* UI 面板 */}
+      <QuestLog />
+      <EventLog />
+      <SystemStatus />
     </div>
   );
 }
