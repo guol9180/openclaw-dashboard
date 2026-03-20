@@ -4,11 +4,14 @@ FROM node:20-alpine AS backend-builder
 WORKDIR /app/backend
 
 COPY backend/package*.json ./
-RUN npm install --production
+RUN npm install
 
 COPY backend/tsconfig.json ./
 COPY backend/ ./
 RUN npm run build
+
+# Remove devDependencies
+RUN npm prune --production
 
 # Production stage
 FROM node:20-alpine

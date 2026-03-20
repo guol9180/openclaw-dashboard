@@ -10,8 +10,11 @@ import { createServer } from 'http';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
-import { LogCollector, StatusCollector, MetricsCollector } from './collectors/index.js';
-import { AIStateManager, TaskManager } from './state/index.js';
+import { LogCollector } from './collectors/log-collector.js';
+import { StatusCollector } from './collectors/status-collector.js';
+import { MetricsCollector } from './collectors/metrics-collector.js';
+import { AIStateManager } from './state/ai-state.js';
+import { TaskManager } from './state/task-manager.js';
 import { WebSocketHandler } from './websocket/handler.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -71,7 +74,6 @@ fastify.get('/api/status', async (request, reply) => {
 
 // API: 获取系统指标
 fastify.get('/api/metrics', async (request, reply) => {
-  // 这里将由 metrics collector 提供
   return {
     message: 'Metrics available via WebSocket',
     timestamp: Date.now()
@@ -100,31 +102,22 @@ fastify.get('/api/health', async (request, reply) => {
 
 // 日志收集器事件
 logCollector.on('event', (event) => {
-  // 添加到缓存
   recentLogs.push(event);
   if (recentLogs.length > MAX_LOGS) {
     recentLogs.shift();
   }
-
-  // 更新 AI 状态
   aiStateManager.handleEvent(event);
-
-  // 更新任务
   taskManager.handleEvent(event);
-
-  // 广播事件
   wsHandler.broadcastEvent(event);
 });
 
 // 状态收集器事件
 statusCollector.on('status', (status) => {
-  // 可以在这里处理 OpenClaw 运行状态
   fastify.log.info('OpenClaw status:', status);
 });
 
 // 指标收集器事件
 metricsCollector.on('metrics', ({ system, ai, timestamp }) => {
-  // 广播指标
   wsHandler.broadcastMetrics(system, ai);
 });
 
@@ -138,9 +131,6 @@ taskManager.on('task-update', (task) => {
   wsHandler.broadcastTaskUpdate(task);
 });
 
-// WebSocket 连接处理
-// (已在 WebSocketHandler 中处理)
-
 // ========== 启动服务器 ==========
 
 const start = async () => {
@@ -152,11 +142,6 @@ const start = async () => {
     logCollector.start();
     statusCollector.start();
     metricsCollector.start();
-  } catch (err) {
-    fastify.log.error(err);
-    process.exit(1);
-  }
-});
 
     // 启动 Fastify
     await fastify.ready();
