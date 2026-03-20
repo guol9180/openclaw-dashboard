@@ -149,9 +149,14 @@ const start = async () => {
     const host = process.env.HOST || '0.0.0.0';
 
     // 启动收集器
-    await logCollector.start();
+    logCollector.start();
     statusCollector.start();
     metricsCollector.start();
+  } catch (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
+});
 
     // 启动 Fastify
     await fastify.ready();
